@@ -50,8 +50,8 @@ main() {
     printf("ERROR - cannot open front.in \n");
   else {
     getChar();
-  do {
-    lex();
+    do {
+      lex();
     } while (nextToken != EOF);
   }
 }
@@ -114,18 +114,27 @@ void addChar() {
 input and determine its character class */
 void getChar() {
   if ((nextChar = getc(in_fp)) != EOF) {
-    if (isalpha(nextChar))
-      charClass = LETTER;
-    else if (isdigit(nextChar))
-      charClass = DIGIT;
-    else charClass = UNKNOWN;
+    if (nextChar == '\n')
+      printf("\nNew line here\n");
+    else {
+      if (isalpha(nextChar))
+        charClass = LETTER;
+      else if (isdigit(nextChar))
+        charClass = DIGIT;
+      else charClass = UNKNOWN;
+    }
   }
   else
   charClass = EOF;
 }
 
 void getLine() {
-  printf("Hi");
+  printf("%s\n", nextChar );
+  if (nextChar == '\n') {
+    printf("\nNew line here\n");
+  }
+  else
+    getChar();
 }
 
 /*****************************************************/
