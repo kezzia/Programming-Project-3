@@ -12,6 +12,7 @@ int lexLen;
 int exprLen = 0;
 int token;
 int nextToken;
+int prevToken; /*IDENT and IDENT, IDENT and INT_LIT, INT_LIT and INT_LIT etc cannot be side by side*/
 int errorCode = 0; /*if this is anything other than 0, cease the function*/
 
 FILE *in_fp, *fopen();
@@ -74,36 +75,44 @@ int lookup(char ch) {
   switch (ch) {
   case '(':
   addChar();
+  prevToken = nextToken;
   nextToken = LEFT_PAREN;
   break;
 
   case ')':
     addChar();
+    prevToken = nextToken;
     nextToken = RIGHT_PAREN;
     break;
   
   case '+':
     addChar();
+    printf("NT:%d\n",nextToken );
+    prevToken = nextToken;
     nextToken = ADD_OP;
     break;
   
   case '-':
     addChar();
+    prevToken = nextToken;  
     nextToken = SUB_OP;
     break;
   
   case '*':
     addChar();
+    prevToken = nextToken;
     nextToken = MULT_OP;
     break;
   
   case '/':
     addChar();
+    prevToken = nextToken;
     nextToken = DIV_OP;
     break;
 
   default:
     addChar();
+    prevToken = nextToken;
     nextToken = EOF;
     break;
   }
@@ -124,8 +133,7 @@ void addChar() {
 /*adds all lexemes to an expression*/
 void addToExpression() {
   if (exprLen <= 98) {
-
-    /*for each character in our lexeme*/
+    /*add each character in current lexeme to expression*/
     for (int i = 0; i < lexLen; ++i) {
       expression[exprLen++] = lexeme[i];
       expression[exprLen] = 0;
@@ -178,6 +186,7 @@ int lex() {
         addChar();
         getChar();
       }
+      prevToken = nextToken;
       nextToken = IDENT;
       break;
 
@@ -189,6 +198,7 @@ int lex() {
         addChar();
         getChar();
       }
+      prevToken = nextToken;
       nextToken = INT_LIT;
       break;
 
@@ -200,6 +210,7 @@ int lex() {
 
     /* EOF */
     case EOF:
+      prevToken = nextToken;
       nextToken = EOF;
       lexeme[0] = 'E';
       lexeme[1] = 'O';
@@ -209,8 +220,8 @@ int lex() {
   } /* End of switch */
 
   if (errorCode == 0) {
-    printf("\n\nNext token is: %d, Next lexeme is %s\n",
-      nextToken, lexeme);
+    printf("\n\nPrevious token is: %d, Next token is: %d, Next lexeme is %s\n",
+      prevToken, nextToken, lexeme);
     addToExpression();
     printf("%s \n", expression);
   }
@@ -304,4 +315,8 @@ void error1() {
 void error2() { 
   printf("AN ERROR OCCURRED: Expected an id, an integer literal, or a left parenthesis, received '%s'\n", lexeme);
   errorCode = 2;
+}
+
+void error3() {
+  printf("AN ERROR OCCURRED: Expected an operator, but received '%s'\n", lexeme);
 }
