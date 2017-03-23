@@ -6,8 +6,10 @@ arithmetic expressions */
 /* Variables */
 int charClass;
 char lexeme [100];
+char expression [100]; /*holds the expression so far*/
 char nextChar;
 int lexLen;
+int exprLen = 0;
 int token;
 int nextToken;
 FILE *in_fp, *fopen();
@@ -116,6 +118,20 @@ void addChar() {
     printf("Error - lexeme is too long \n");
 }
 
+
+/*adds all lexemes to an expression*/
+void addToExpression() {
+  if (exprLen <= 98) {
+
+    /*for each character in our lexeme*/
+    for (int i = 0; i < lexLen; ++i) {
+      expression[exprLen++] = lexeme[i];
+      expression[exprLen] = 0;
+    }
+    
+  }
+}
+
 /*****************************************************/
 /* getChar - a function to get the next character of
 input and determine its character class */
@@ -190,8 +206,14 @@ int lex() {
       break;
   } /* End of switch */
 
-  printf("\n\nNext token is: %d, Next lexeme is %s\n",
-  nextToken, lexeme);
+  // printf("\n\nNext token is: %d, Next lexeme is %s\n",
+  // nextToken, lexeme);
+  printf("%s ", lexeme);
+  addToExpression();
+
+
+  printf("%s ", expression);
+
   return nextToken;
 } /* End of function lex */
 
@@ -265,10 +287,18 @@ else {
 printf("Exit <factor>\n");;
 } /* End of function factor */
 
+
+// <expr> → <term> {(+ | -) <term>}
+// <term> → <factor> {(* | /) <factor>}
+// <factor> → id | int_constant | ( <expr> )
+
+//+ and - must be followed by a term or factor
+//* 
+
 void error1() {
   printf("AN ERROR OCCURRED: Unclosed parenthesis.\n");
 }
 
 void error2() { 
-  printf("AN ERROR OCCURRED: It was not an id, an integer literal, or a left parenthesis\n");
+  printf("AN ERROR OCCURRED: Expected an id, an integer literal, or a left parenthesis\n");
 }
