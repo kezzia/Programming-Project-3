@@ -42,6 +42,11 @@ void error();
 #define LEFT_PAREN 25
 #define RIGHT_PAREN 26
 
+// <expr> → <term> {(+ | -) <term>}
+// <term> → <factor> {(* | /) <factor>}
+// <factor> → id | int_constant | ( <expr> )
+
+
 /******************************************************/
 /* main driver */
 main() {
@@ -131,7 +136,7 @@ void getChar() {
 void getLine() {
   printf("%s\n", nextChar );
   if (nextChar == '\n') {
-    printf("\nNew line here\n");
+    printf("\n\nNEW LINE\n");
   }
   else
     getChar();
@@ -193,8 +198,9 @@ switch (charClass) {
     break;
 } /* End of switch */
 
-  printf("Next token is: %d, Next lexeme is %s\n",
+  printf("\n\nNext token is: %d, Next lexeme is %s\n",
   nextToken, lexeme);
+  expr();
   return nextToken;
 } /* End of function lex */
 
