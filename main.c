@@ -24,7 +24,8 @@ void addLine();
 void expr();
 void term();
 void factor();
-void error();
+void error1();
+void error2();
 
 
 /* Character classes */
@@ -133,15 +134,6 @@ void getChar() {
   charClass = EOF;
 }
 
-void getLine() {
-  printf("%s\n", nextChar );
-  if (nextChar == '\n') {
-    printf("\n\nNEW LINE\n");
-  }
-  else
-    getChar();
-}
-
 /*****************************************************/
 /* getNonBlank - a function to call getChar until it
 returns a non-
@@ -156,51 +148,49 @@ void getNonBlank() {
 /* lex - a simple lexical analyzer for arithmetic
 expressions */
 int lex() {
-lexLen = 0;
-getNonBlank();
-switch (charClass) {
-
-/* Parse identifiers */
-  case LETTER:
-    addChar();
-    getChar();
-    while (charClass == LETTER || charClass == DIGIT) {
+  lexLen = 0;
+  getNonBlank();
+  switch (charClass) {
+    /* Parse identifiers */
+    case LETTER:
       addChar();
       getChar();
-    }
-    nextToken = IDENT;
-    break;
+      while (charClass == LETTER || charClass == DIGIT) {
+        addChar();
+        getChar();
+      }
+      nextToken = IDENT;
+      break;
 
-  /* Parse integer literals */
-  case DIGIT:
-    addChar();
-    getChar();
-    while (charClass == DIGIT) {
-    addChar();
-    getChar();
-    }
-    nextToken = INT_LIT;
-    break;
+    /* Parse integer literals */
+    case DIGIT:
+      addChar();
+      getChar();
+      while (charClass == DIGIT) {
+        addChar();
+        getChar();
+      }
+      nextToken = INT_LIT;
+      break;
 
-  /* Parentheses and operators */  
-  case UNKNOWN:
-    lookup(nextChar);
-    getChar();
-    break;
+    /* Parentheses and operators */  
+    case UNKNOWN:
+      lookup(nextChar);
+      getChar();
+      break;
 
-  /* EOF */
-  case EOF:
-    nextToken = EOF;
-    lexeme[0] = 'E';
-    lexeme[1] = 'O';
-    lexeme[2] = 'F';
-    lexeme[3] = 0;
-    break;
-} /* End of switch */
+    /* EOF */
+    case EOF:
+      nextToken = EOF;
+      lexeme[0] = 'E';
+      lexeme[1] = 'O';
+      lexeme[2] = 'F';
+      lexeme[3] = 0;
+      break;
+  } /* End of switch */
 
   printf("\n\nNext token is: %d, Next lexeme is %s\n",
   nextToken, lexeme);
-  expr();
   return nextToken;
 } /* End of function lex */
 
@@ -264,16 +254,20 @@ else {
     if (nextToken == RIGHT_PAREN)
       lex();
     else
-      error();
+      error1();
   } /* End of if (nextToken == ... */
   /* It was not an id, an integer literal, or a left
   parenthesis */
   else
-    error();
+    error2();
 } /* End of else */
 printf("Exit <factor>\n");;
 } /* End of function factor */
 
-void error() {
-  printf("AN ERROR OCCURRED.\n");
+void error1() {
+  printf("AN ERROR OCCURRED: Unclosed parenthesis.\n");
+}
+
+void error2() { 
+  printf("AN ERROR OCCURRED: It was not an id, an integer literal, or a left parenthesis\n");
 }
