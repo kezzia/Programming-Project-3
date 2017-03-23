@@ -12,6 +12,8 @@ int lexLen;
 int exprLen = 0;
 int token;
 int nextToken;
+int errorCode = 0; /*if this is anything other than 0, cease the function*/
+
 FILE *in_fp, *fopen();
 
 /* Function declarations */
@@ -206,13 +208,12 @@ int lex() {
       break;
   } /* End of switch */
 
-  // printf("\n\nNext token is: %d, Next lexeme is %s\n",
-  // nextToken, lexeme);
-  printf("%s ", lexeme);
-  addToExpression();
-
-
-  printf("%s ", expression);
+  if (errorCode == 0) {
+    printf("\n\nNext token is: %d, Next lexeme is %s\n",
+      nextToken, lexeme);
+    addToExpression();
+    printf("%s \n", expression);
+  }
 
   return nextToken;
 } /* End of function lex */
@@ -297,8 +298,10 @@ printf("Exit <factor>\n");;
 
 void error1() {
   printf("AN ERROR OCCURRED: Unclosed parenthesis.\n");
+  errorCode = 1;
 }
 
 void error2() { 
-  printf("AN ERROR OCCURRED: Expected an id, an integer literal, or a left parenthesis\n");
+  printf("AN ERROR OCCURRED: Expected an id, an integer literal, or a left parenthesis, received '%s'\n", lexeme);
+  errorCode = 2;
 }
