@@ -2,6 +2,8 @@
 arithmetic expressions */
 #include <stdio.h>
 #include <ctype.h>
+#include <stdlib.h>
+
 /* Global declarations */
 /* Variables */
 int charClass;
@@ -16,6 +18,14 @@ int nextToken;
 int prevToken; /*IDENT and IDENT, IDENT and INT_LIT, INT_LIT and INT_LIT etc cannot be side by side*/
 int errorCode = 0; /*if this is anything other than 0, cease the function*/
 int newline_found;
+
+char lastCharacter;
+ 
+size_t length = 0;
+ssize_t read;
+char* line = NULL;
+int indexl;
+
 
 
 
@@ -175,20 +185,6 @@ void clearLexeme() {
 /* getChar - a function to get the next character of
 input and determine its character class */
 void getChar() {
-  // if (nextChar == '\n') {
-  //   printf("\nPARSING NEXT EXPRESSION:\n");
-  //   prevToken = 0;
-  //   nextToken = 0; //reset prevtoken when a new line starts
-  //   errorCode = 0;
-  //   clearExpression();
-  //   clearLexeme();
-  //   charClass = 0;
-  //   nextChar =  0;
-  //   token = 0;
-  //   newline_found = 1;
-  //   return;
-  // }
-
   if ((nextChar = getc(in_fp)) != EOF) {
     if (isalpha(nextChar))
       charClass = LETTER;
