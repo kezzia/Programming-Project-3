@@ -23,7 +23,7 @@ char lastCharacter;
  
 size_t length = 0;
 ssize_t read;
-char* line = NULL;
+char* target_line = NULL;
 int indexl;
 
 
@@ -74,17 +74,31 @@ void error3();
 
 /******************************************************/
 /* main driver */
+/* main driver */
+
 int main(int argc, char* argv[]) {
   /* Open the input data file and process its contents */
 
-  if ((in_fp = fopen("front.in", "r")) == NULL)
+  /* If the file Name is not provided, exit! */
+  if (argc != 2) {
+    printf("No file specified :(\n");
+    return 0;
+  }
+
+  if ((in_fp = fopen(argv[1], "r")) == NULL)
     printf("ERROR - cannot open front.in \n");
-  else {
-    getChar();
-    do {
-      lex();
-      expr();
-    } while (nextToken != EOF);
+  else { 
+    while ((read = getline(&target_line, &length, in_fp)) != -1) {
+      printf("\n\n\n");
+      indexl = 0;
+      getChar();
+      if(target_line != NULL){
+        do {
+          lex();  
+          expr();
+        } while (nextToken != EOF);
+      }
+    } 
   }
   return 0;
 }
